@@ -652,10 +652,27 @@ public class SRT {
     String FnumSRT="";
     int nbdataread = 0;
         
+    // mavic mini format has been updated
+    
+    // regular mavic format
+//2
+//00:00:02,000 --> 00:00:03,000
+//HOME(<lat>,<lon>) <date> <time>
+//GPS(<lat>,<lon>,<altitude>) BAROMETER:<value>
+//ISO:478 Shutter:30 EV: 0 Fnum:F2.8 
+
+    // mavic mini format - 2019
+//2
+//00:00:00,016 --> 00:00:00,033
+//<font size="36">FrameCnt : 2, DiffTime : 17ms
+//<date> <time>,<subsecond fields>
+//[iso : 100] [shutter : 1/160.0] [fnum : 280] [ev : 0] [ct : 5316] [color_md : default] </font>
+
+    
     while ((strLine = br.readLine()) != null) {
         if (strLine.compareTo("\n") != 0) {
             indexSRT = strLine;
-            //System.out.println("str1 SRT index : " + strLine + "\n");
+            System.out.println("str1 SRT index : " + strLine + "\n");
         }
 
         if((strLine = br.readLine()) != null){
@@ -663,7 +680,7 @@ public class SRT {
             if (atoms.length == 2){
                 offsetStart= atoms[0];
                 offsetEnd= atoms[1];
-                //System.out.println("str2 SRT " + offsetStart + " xx " + offsetEnd + "\n");
+                System.out.println("str2 SRT " + offsetStart + " xx " + offsetEnd + "\n");
             }
         }
         
@@ -677,19 +694,19 @@ public class SRT {
 
                 dateSRT= atoms[1];
                 timeSRT= atoms[2];
-                //System.out.println("str3 SRT " + homeGPS1SRT + " + " + homeGPS2SRT + "\n");
+                System.out.println("str3 SRT " + homeGPS1SRT + " + " + homeGPS2SRT + "\n");
             }
          }
         if((strLine = br.readLine()) != null){
             String[] atoms = strLine.split(" "); 
-            if (atoms.length == 2){//GPS(6.3072,45.6849)
+            if (atoms.length == 2){//GPS(<lat>,<lon>)
                 String[] GPSSTR = atoms[0].split(",");
                 droneGPS2SRT = GPSSTR[0].substring(4);
                 droneGPS1SRT = GPSSTR[1].replace(')',' ');
                 String[] ALTSTR = atoms[1].split(":");             
                 AltitudeSRT = ALTSTR[1];
-                //System.out.println("str4 SRT lat " + droneGPS1SRT + " - lon " + droneGPS2SRT);
-                //System.out.println("str4 SRT alt:" + AltitudeSRT + "\n");
+                System.out.println("str4 SRT lat " + droneGPS1SRT + " - lon " + droneGPS2SRT);
+                System.out.println("str4 SRT alt:" + AltitudeSRT + "\n");
             }
          }
         if((strLine = br.readLine()) != null){
@@ -700,13 +717,13 @@ public class SRT {
                 EVSRT = atoms[2] + atoms[3];
                 FnumSRT = atoms[4];
 
-               // System.out.println("str5 SRT " + IsoSRT + "\n");
+                System.out.println("str5 SRT " + IsoSRT + "\n");
             }
             else{
-                //System.out.println("lenght: "+ atoms.length +"\n");
-                //for(int i=0 ; i < atoms.length ; i++){
-                  //  System.out.println("Exif atom ["+i+"]: "+atoms[i]+"\n");
-                //}
+                System.out.println("lenght: "+ atoms.length +"\n");
+                for(int i=0 ; i < atoms.length ; i++){
+                    System.out.println("Exif atom ["+i+"]: "+atoms[i]+"\n");
+                }
                 if (atoms.length == 4){
                     IsoSRT = atoms[0];
                     ShutterSRT = atoms[1];
@@ -716,11 +733,11 @@ public class SRT {
             }
          }
         if((strLine = br.readLine()) != null){
-            // System.out.println("str6 SRT empty" + "\n");
+             System.out.println("str6 SRT empty" + "\n");
         }
         int i = Integer.parseInt(indexSRT);
 
-//        System.out.println("data <" +i+ "> read\n");
+        System.out.println("data <" +i+ "> read\n");
         datafromSRT[i] = new gpsElement(homeGPS1SRT, homeGPS2SRT, dateSRT, timeSRT, droneGPS1SRT, droneGPS2SRT, AltitudeSRT);
         exiffromSRT[i] = new exifElement(IsoSRT, ShutterSRT, EVSRT,FnumSRT);
 

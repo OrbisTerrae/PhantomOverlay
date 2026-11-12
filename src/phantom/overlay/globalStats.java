@@ -10,7 +10,7 @@ package phantom.overlay;
  * @author gbourelly
  */
 public class globalStats {
-    private String AppVersion ="1.1.2";
+    private String AppVersion ="1.2";
      private String dateStr; 
      private String startTimeStr;
      private String endTimeStr;
